@@ -25,9 +25,11 @@ enablePlugins(ScalaJSPlugin)
 
 transitiveClassifiers := Seq(Artifact.SourceClassifier)
 
-persistLauncher := true
+// persistLauncher := true
 
-persistLauncher in Test := false
+// persistLauncher in Test := false
+
+scalaVersion := commonScalaVersion
 
 
 // QuickSettings
@@ -53,7 +55,7 @@ lazy val jvmProjectDirectory = "jvm_src"
 lazy val scalajsProjectDirectory = "scalajs_src"
 
 // QuickDependencyVersions
-lazy val scalajsVersion = "0.6.0-RC1"
+lazy val scalajsVersion = "0.6.0-RC2"
 lazy val scalajsDomVersion = "0.7.0"
 
 
@@ -83,6 +85,8 @@ lazy val jvmProject = (project in file(jvmProjectDirectory)).
 
 lazy val scalajsProject = (project in file(scalajsProjectDirectory)).
   settings(
+    persistLauncher := true,
+    persistLauncher in Test := false,
     name := scalajsProjectName,
     version := "0.0.1.20150123",
     scalaVersion := commonScalaVersion,
@@ -139,9 +143,9 @@ lazy val scalajsDependencies = Def.setting(Seq[ModuleID](
 //   "org.scala-js" %%% "scalajs-dom" % scalajsDomVersion, // TODO: doesn't work yet
   "org.scala-js" %%% "scalajs-dom_sjs0.6.0-RC1" % scalajsDomVersion,
 //   "org.scala-lang.modules.scalajs" %%% "scalajs-jasmine-test-framework" % scalajsVersion % "test",
-  "com.lihaoyi" %%% "upickle" % "0.2.4",
-  "com.scalatags" %%% "scalatags" % "0.4.0",
-  "com.scalarx" %%% "scalarx" % "0.2.6"
+  "com.lihaoyi" %%% "upickle" % "latest.integration",//"0.2.4",
+  "com.scalatags" %%% "scalatags" % "latest.integration",//"0.4.0",
+  "com.scalarx" %%% "scalarx" % "latest.integration"//"0.2.6"
 //   "org.scala-js" %%% "scalajs-jquery_sjs0.6.0-RC1" % scalajsDomVersion/
 ))
 

@@ -1,6 +1,10 @@
 // Comment to get more information during initialization
 //logLevel := Level.Warn
 
+// doesn't work
+// lazy val commonScalaVersion = "2.11.5"
+// scalaVersion := commonScalaVersion
+
 // Resolvers
 resolvers += "TypeSafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
@@ -18,6 +22,8 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.4")
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.0-RC2")
+
+// addSbtPlugin("org.scala-js" % "sbt-scalajs" % "latest.integration")
 
 // addSbtPlugin("org.scala-lang.modules.scalajs" % "scalajs-sbt-plugin" % "0.5.6") //latest.integration)// % "0.5.5")
 
