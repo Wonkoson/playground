@@ -68,12 +68,14 @@ case class Nothing() extends BaseColor {
 }
 
 case class Mana(colors: BaseColor*) {
-  override def toString = colors.foldRight("")((c: BaseColor, s: String) => {
-    c match {
-      case Nothing() => ""
-      case c: BaseColor => c.toString
-    }
-  })
+  override def toString = {
+    colors.foldRight("")((c: BaseColor, s: String) => {
+      c match {
+        case Nothing() => ""
+        case c: BaseColor => c.toString
+      }
+    })
+  }
   def draw() = println(this)
 }
 
@@ -90,7 +92,7 @@ case class Creature() extends CardType { override def toString = "Creature" }
 
 case class MagicCard(
                       name: String,
-                      image: String
+                      image: String,
                       castingCost: List[Mana],
                       color: BaseColor,
                       convertedManaCost: Int,
@@ -109,17 +111,19 @@ case class MagicCard(
 
 object Macros {
   import wonko.macros.Macros._
-  def W: Mana = macro Color.ColorWhite
-  def U: Mana = macro Color.ColorBlue
-  def B: Mana = macro Color.ColorBlack
-  def R: Mana = macro Color.ColorRed
-  def G: Mana = macro Color.ColorGreen
-  def C: Mana = macro Color.ColorColorless
-  def N: Mana = macro Color.ColorNothing
+  def W: Mana = macro ManaImpl.ColorWhite
+  def U: Mana = macro ManaImpl.ColorBlue
+  def B: Mana = macro ManaImpl.ColorBlack
+  def R: Mana = macro ManaImpl.ColorRed
+  def G: Mana = macro ManaImpl.ColorGreen
+  def C: Mana = macro ManaImpl.ColorColorless
+  def N: Mana = macro ManaImpl.ColorNothing
 }
 
 
 object Main extends App {
+
+  import Macros._
 
 //  val white = W //OneColor(White())
 //  white.draw()
@@ -129,6 +133,6 @@ object Main extends App {
   val mongoClient = MongoClient("tugoffline")
 
 
-//  println(W)
-//  println(W + "" + U + B + R + G + C + N)
+  println(W)
+  println(W + "" + U + B + R + G + C + N)
 }

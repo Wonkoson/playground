@@ -10,7 +10,7 @@ import scala.reflect.macros.blackbox.Context
  */
 object Macros {
 
-  object Color {
+  object ManaImpl {
     def ColorWhite(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(White())).tree)
     def ColorBlue(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Blue())).tree)
     def ColorBlack(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Black())).tree)
