@@ -1,8 +1,8 @@
-package io.goodguys.tugoffline
+package wonko.tugoffline
 
 import java.util.concurrent.TimeUnit
 
-import org.openqa.selenium.{SearchContext, By}
+import org.openqa.selenium.By
 import org.openqa.selenium.firefox.FirefoxDriver
 
 /**

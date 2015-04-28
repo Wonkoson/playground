@@ -1,9 +1,10 @@
-package io.goodguys.tugoffline
-
+package wonko.tugoffline
 
 /**
  * Created by wonko on 2015-04-25.
  */
+
+import com.mongodb.casbah.MongoClient
 
 import scala.language.experimental.macros
 
@@ -82,12 +83,19 @@ case class Mana(colors: BaseColor*) {
 //  def isColorless() =
 //}
 
+trait CardType
+
+case class Creature() extends CardType { override def toString = "Creature" }
 
 
 case class MagicCard(
+                      name: String,
+                      image: String
+                      castingCost: List[Mana],
                       color: BaseColor,
-                      castingCost: List[Mana]
-                      ) {
+                      convertedManaCost: Int,
+                      types: List[String]
+) {
   override def toString = "MagicCard"
 }
 
@@ -100,32 +108,27 @@ case class MagicCard(
 //^
 
 object Macros {
-
-  import io.goodguys.macros.Macros._
-
-  def W: Mana = macro Impl.ColorWhite
-
-  def U: Mana = macro Impl.ColorBlue
-
-  def B: Mana = macro Impl.ColorBlack
-
-  def R: Mana = macro Impl.ColorRed
-
-  def G: Mana = macro Impl.ColorGreen
-
-  def C: Mana = macro Impl.ColorColorless
-
-  def N: Mana = macro Impl.ColorNothing
+  import wonko.macros.Macros._
+  def W: Mana = macro Color.ColorWhite
+  def U: Mana = macro Color.ColorBlue
+  def B: Mana = macro Color.ColorBlack
+  def R: Mana = macro Color.ColorRed
+  def G: Mana = macro Color.ColorGreen
+  def C: Mana = macro Color.ColorColorless
+  def N: Mana = macro Color.ColorNothing
 }
 
 
 object Main extends App {
-  import Macros._
 
 //  val white = W //OneColor(White())
 //  white.draw()
   val m = Mana(White(), Blue(), Black(), Red(), Green(), Colorless(), Nothing())
   println(m)
-  println(W)
-  println(W + "" + U + B + R + G + C + N)
+
+  val mongoClient = MongoClient("tugoffline")
+
+
+//  println(W)
+//  println(W + "" + U + B + R + G + C + N)
 }

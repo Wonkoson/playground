@@ -1,9 +1,8 @@
-package io.goodguys.tugoffline
+package wonko.tugoffline
 
 import org.jsoup.Jsoup
-import org.openqa.selenium.{WebElement, By}
+import org.openqa.selenium.By
 import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.ui.Select
 
 //import org.scalatest.{FlatSpec, Matchers}
@@ -76,11 +75,14 @@ object GathererHarvester extends App {
     val links = getLinks
     println("links.size = " + links.size)
 
+    def getInfo = {
+      driver.findElementByXPath("//")
+    }
 
     if (i < links.size) {
       links.get(i).click()
 
-      // retrieve Info
+      val (card) = getInfo
 
       driver.navigate().back()
 
