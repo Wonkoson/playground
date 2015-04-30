@@ -1,7 +1,5 @@
 package io.goodguys.tugoffline
 
-import com.mongodb.casbah.MongoClient
-
 /**
  * Created by wonko on 2015-04-23.
  */
@@ -14,11 +12,11 @@ object Main extends App {
 
   //  val white = W //OneColor(White())
   //  white.draw()
-  val all = Mana(White() :: Blue() :: Black() :: Red() :: Green() :: Colorless() :: Nothing())
+  val all = Mana(White() :: Blue() :: Black() :: Red() :: Green() :: OneColorless() :: Nothing())
 
   val nr = Mana(Nothing() :: Red())
 
-  val c = Mana(Colorless())
+  val c = Mana(OneColorless())
 
   val u = Mana(Blue())
 
@@ -26,15 +24,26 @@ object Main extends App {
 
   val G = Green()
 
-  val mongoClient = MongoClient("tugoffline")
+
+  val specialChars = """+a/b?c.d\u1234e"""
+
+  println(specialChars)
+
+  val sanitized = specialChars.replaceAll("[^0-9a-zA-Z-]+", "")
+
+  println(sanitized)
 
 
-  println("ur pays  u: " + (ur pays  u))
-  println("u pays ur: " + (u pays ur))
-  println("nr pays  all: " + (nr pays  all))
-  println("all pays nr: " + (all pays nr))
-  println("all pays G: " + (all pays G))
-  println("all pays ur: " + (all pays ur))
+  println(Mana.parseMana("Two or Green"))
+  println(Mana.parseMana("Black or Green"))
+  println(Mana.parseMana("15"))
+
+//  println("ur pays  u: " + (ur pays  u))
+//  println("u pays ur: " + (u pays ur))
+//  println("nr pays  all: " + (nr pays  all))
+//  println("all pays nr: " + (all pays nr))
+//  println("all pays G: " + (all pays G))
+//  println("all pays ur: " + (all pays ur))
 
   //  println(W)
   //  println(W + "" + U + B + R + G + C + N)

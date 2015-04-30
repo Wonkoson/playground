@@ -43,11 +43,13 @@ val coreDeps = commonDeps ++ Seq(
   // Jsoup
   "org.jsoup" % "jsoup" % "1.8.+",                          // HTML Parser and Extractor
   // ScalaTest
-  "org.scalatest" % "scalatest_2.11" % "2.2.+",             // Test Framework
-  // MongoDB
-  "org.mongodb" % "casbah_2.11" % "2.8.+",                  // MongoDB Casbah
+  "org.scalatest" %% "scalatest" % "2.2.+",                 // Test Framework
+//  // MongoDB
+//  "org.mongodb" %% "casbah" % "2.8.+",                    // MongoDB Casbah
   // Slick
-  "com.typesafe.slick" % "slick_2.11" % "3.0.+"             // Slick
+  "com.typesafe.slick" %% "slick" % "3.0.+",                // Slick
+  // PostgreSQL JDBC Driver
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"       // PostgreSQL JDBC Driver
 )
 
 

@@ -1,9 +1,16 @@
 package io.goodguys.tugoffline
 
+import java.io.File
+import java.net.URL
+import javax.imageio.ImageIO
+
 import org.jsoup.Jsoup
-import org.openqa.selenium.By
 import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.support.ui.Select
+import org.openqa.selenium.support.ui.{Select, WebDriverWait}
+import org.openqa.selenium.{By, WebElement}
+
+import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 
 //import org.scalatest.{FlatSpec, Matchers}
 
@@ -29,6 +36,7 @@ object GathererHarvester extends App {
   System.setProperty("webdriver.chrome.driver", "/home/wonko/Scala/Tools/ChromeDriver/chromedriver") //"/usr/bin/chromium-browser")
 
   val driver = new ChromeDriver()
+  val driverWait = new WebDriverWait(driver, 30)
 
   val baseUri = "http://gatherer.wizards.com/"
 
@@ -43,7 +51,8 @@ object GathererHarvester extends App {
   val cardSetDropDown = dropDowns.get(1)
   val cardSetOptions = cardSetDropDown.getElementsByTag("option")
 
-  def getSets(): List[String] = {
+  def getSets: List[String] = {
+    @tailrec
     def loop(i: Int, l: List[String]): List[String] = {
       if (i >= cardSetOptions.size())
         l
@@ -58,39 +67,204 @@ object GathererHarvester extends App {
     loop(0, Nil)
   }
 
-  val sets = getSets()
+  val sets = getSets
 
 
   // Issue Search by Set
 
-  val set = sets(0)
+  val set = sets.head
 
-  driver.findElement(By.id("ctl00_ctl00_MainContent_Content_SearchControls_setAddText")).click
+  driver.findElement(By.id("ctl00_ctl00_MainContent_Content_SearchControls_setAddText")).click()
   new Select(driver.findElement(By.id("ctl00_ctl00_MainContent_Content_SearchControls_setAddText"))).selectByVisibleText(set)
-  driver.findElement(By.id("ctl00_ctl00_MainContent_Content_SearchControls_searchSubmitButton")).click
+  driver.findElement(By.id("ctl00_ctl00_MainContent_Content_SearchControls_searchSubmitButton")).click()
 
-  def getLinks = driver.findElementsByXPath("//table[@class=\"cardItemTable\"]//td[@class=\"leftCol\"]/a")
 
-  def loop(i: Int): Unit = {
-    val links = getLinks
-    println("links.size = " + links.size)
+  // Get card details
+  def cardDetailLoop(i: Int, retry: Int, edition: String): Unit = {
 
-    def getInfo = {
-      driver.findElementByXPath("//")
+    def getRowValue(key: String, cells: List[WebElement]): Option[WebElement] = {
+      @tailrec
+      def loop(i: Int, takeThis: Boolean, cells: List[WebElement]): Option[WebElement] = {
+        if (i >= cells.size)
+          None
+        else {
+          if (takeThis)
+            Some(cells(i))
+          else {
+//            println("'" + cells(i).getText.trim() + "' == '" + key + "'")
+            if (cells(i).getText.trim().matches(key))
+              loop(i + 1, true, cells)
+            else
+              loop(i + 1, false, cells)
+          }
+        }
+      }
+      loop(0, false, cells)
     }
 
-    if (i < links.size) {
-      links.get(i).click()
+    def getRowValues(key: String, tagName: String, cells: List[WebElement]): List[WebElement] = {
+      @tailrec
+      def loop(i: Int, takeThis: Boolean, cells: List[WebElement]): List[WebElement] = {
+        if (i >= cells.size)
+          List()
+        else {
+          if (takeThis) {
+//            val html = cells(i).getText
+//            println(html)
+            cells(i).findElements(By.tagName(tagName)).asScala.toList
+          }
+          else {
+//            println("'" + cells(i).getText.trim() + "' == '" + key + "'")
+            if (cells(i).getText.trim().matches(key))
+              loop(i + 1, true, cells)
+            else
+              loop(i + 1, false, cells)
+          }
+        }
+      }
+      loop(0, false, cells)
+    }
 
-      val (card) = getInfo
+    def getName(cells: List[WebElement]): String = getRowValue(MagicCard.CardNameKey, cells).getOrElse(EmptyWebElement).getText.trim
+
+    def getCastingCost(cells: List[WebElement]): List[Mana] = {
+      val elems = getRowValues(MagicCard.CastingCostKey, "img", cells)
+      val mana: List[Mana] = for (e <- elems) yield Mana.AltTextToMana(e.getAttribute("alt"))
+      mana
+    }
+
+    // @return (cardTypes: List[String, subTypes: [List[String]]])
+    def getTypes(cells: List[WebElement]): (List[String], List[String]) = {
+      val text = getRowValue(MagicCard.CardTypesKey, cells).getOrElse(EmptyWebElement).getText
+      // \u2014 == &mdash;
+      val types = text.split("\u2014").map(_.trim).map(_.replaceAll(" +", " "))
+      val cardTypes = types(0).split(" ").toList
+      val subTypes = if (types.length > 1) types(1).split(" ").toList else List[String]()
+      (cardTypes, subTypes)
+    }
+
+
+    def getMultiVerseId(url: String): Int = {
+      @tailrec
+      def idFromPart(parts: List[String]): Int = {
+        parts match {
+          case Nil => -1
+          case x :: xs => {
+            if (x.startsWith("multiverseid"))
+              x.split("=")(1).toInt
+            else
+              idFromPart(xs)
+          }
+        }
+      }
+      val parts = url.split('?').toList
+      idFromPart(parts)
+    }
+
+    def replaceManaSymbols(text: String): String = {
+      val replacedMana = text.replaceAll("""\w<img.+alt="(.+)".+/>\w""", "[" + Mana.AltTextToMana("$1").toString + "]")
+      val contractedMana = text.replaceAll("][", "")
+      contractedMana
+    }
+
+//    def getCardText(elems: List[WebElement]): List[String] = {
+//      val html = Jsoup.parse(elems.head.getText)
+//      html.select()
+//    }
+
+
+    //  def getLinks = driver.findElementsByXPath("//table[@class=\"cardItemTable\"]//td[@class=\"leftCol\"]/a")
+    def getLinks = driver.findElementsByXPath("//td[@class=\"leftCol\"]/a")
+
+//    val html = driver.getPageSource
+
+    val links = getLinks
+//    println("links.size = " + links.size)
+
+    if (i < links.size()) {
+      links.get(i).click()
+      // need to wait here @see http://stackoverflow.com/questions/7102931/webdriver-explicit-wait-in-scala
+//      val readyState: Boolean = driver.executeScript("return document.readyState == 'complete'").asInstanceOf[Boolean]
+
+      // @see http://stackoverflow.com/questions/8808921/selecting-a-css-class-with-xpath
+      val tableCells = driver.findElementsByXPath("""//div[@class="smallGreyMono"]/div[contains(concat(" ", normalize-space(@class), " "), " row ")]//div""").asScala.toList
+
+      val multiVerseId = getMultiVerseId(driver.getCurrentUrl)
+      val cardNumber = i + 1
+      val name = getName(tableCells)
+      val castingCost = getCastingCost(tableCells)
+      val convertedManaCost = getRowValue(MagicCard.ConvertedManaCostKey, tableCells).getOrElse(EmptyWebElement).getText.toInt
+      val types = getTypes(tableCells)
+
+      val imageUrl = new URL(driver.findElementByXPath("""//div[@class="cardImage"]/img""").getAttribute("src"))
+      val image = ImageIO.read(imageUrl)
+      val imageFileName = name.replaceAll("[^0-9a-zA-Z-]+", "_")
+      val storagePath = "/home/wonko/Scala/Projects/TugOffline/data/images/" + edition + "/" + imageFileName + ".jpg"
+      val file = new File(storagePath)
+      file.mkdirs()
+      ImageIO.write(image, "jpg", file)
+
+      println(s"Card(id:$multiVerseId, #:$cardNumber, n:$name, cc:$castingCost, cmc:$convertedManaCost, t:${types._1}--${types._2}, i:$imageFileName")
 
       driver.navigate().back()
 
-      loop(i + 1)
+      cardDetailLoop(i + 1, 0, edition)
     }
+    else {
+      if (retry < 20) {
+        println("############################################# retry")
+        cardDetailLoop(i, retry + 1, edition)
+      }
+      else {
+        println("out of retries stopped on >>>>>>>>>>>>>>>>>>")
+//        println(html)
+      }
+    }
+
   }
 
-  loop(0)
+  val edition = set.replaceAll("[^0-9a-zA-Z-]+", "_")
+  cardDetailLoop(0, 0, edition)
+
+//    def getInfo: List[AnyRef] = {
+//
+//      def getAttribyteWithName(rows: List[WebElement]): Option[CardAttribute] = {
+//
+////        def parse(name: String, text: String): CardAttribute = {
+////          match name {
+////            case "Card Name" => Name(text)
+////            case "Mana Cost" => CastingCost(Mana.parse(text))
+////          }
+////        }
+//
+//        def createFromText(key: String, name: String, rows: List[WebElement]): Option[CardAttribute] = {
+//          rows match {
+//            case Nil => None
+//            case x :: xs => {
+//              if (x.getText.contains(key)) {
+//                if (xs == Nil)
+//                  None
+//                else {
+////                  match
+//                  None
+//                }
+//              }
+//              else {
+//                createFromText(key, name, xs)
+//              }
+//            }
+//
+//          }
+//        }
+//      }
+//
+//      val rows = driver.findElementsByXPath("//table[@class=\"cardDetails\"]//div[@class=\"row\"]")
+//
+////      getElementWithName(rows)
+//
+////      val name =
+//
+//    }
 
 //  val cardLinks = driver.findElementsByXPath("""//table[@class="cardItemTable"]//td[@class="leftCol"]/a""")
 

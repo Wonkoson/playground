@@ -16,7 +16,7 @@ object Macros {
     def ColorBlack(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Black())).tree)
     def ColorRed(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Red())).tree)
     def ColorGreen(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Green())).tree)
-    def ColorColorless(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Colorless())).tree)
+    def ColorColorless(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(new Colorless())).tree)
     def ColorNothing(c: Context): c.Expr[Mana] = c.Expr[Mana](c.universe.reify(Mana(Nothing())).tree)
   }
 }
