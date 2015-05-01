@@ -1,5 +1,7 @@
 package io.goodguys.tugoffline
 
+import org.jsoup.Jsoup
+
 /**
  * Created by wonko on 2015-04-23.
  */
@@ -10,33 +12,92 @@ package io.goodguys.tugoffline
 
 object Main extends App {
 
-  //  val white = W //OneColor(White())
-  //  white.draw()
-  val all = Mana(White() :: Blue() :: Black() :: Red() :: Green() :: OneColorless() :: Nothing())
+//  //  val white = W //OneColor(White())
+//  //  white.draw()
+//  val all = Mana(White() :: Blue() :: Black() :: Red() :: Green() :: OneColorless() :: Nothing())
+//
+//  val nr = Mana(Nothing() :: Red())
+//
+//  val c = Mana(OneColorless())
+//
+//  val u = Mana(Blue())
+//
+//  val ur = Mana(Blue() :: Red())
+//
+//  val G = Green()
+//
+//
+//  val specialChars = """+a/b?c.d\u1234e"""
+//
+//  println(specialChars)
+//
+//  val sanitized = specialChars.replaceAll("[^0-9a-zA-Z-]+", "")
+//
+//  def parsePowerToughness(text: String): Int = {
+//    val t = text.trim
+//    if (t.matches("^\\d+$")) t.toInt
+//    else 0
+//  }
+//
+//  val a = parsePowerToughness("1234")
+//  val b = parsePowerToughness("021")
+//  val d = parsePowerToughness("123v")
+//
+//  println(s"a:$a, b:$b, d:$d")
+//
+//  println(sanitized)
+//
+//
+//  println(Mana.parseMana("Two or Green"))
+//  println(Mana.parseMana("Black or Green"))
+//  println(Mana.parseMana("15"))
 
-  val nr = Mana(Nothing() :: Red())
 
-  val c = Mana(OneColorless())
+  def replaceManaSymbols(text: String): String = {
+    if (text.matches( """<img.+alt="(.+)".*>""")) {
+      val replacedMana = text.replaceAll( """<img.+alt="(.+)".*>""", "[" + Mana.AltTextToMana("$1").toString + "]")
+      val contractedMana = text.replaceAll("][", "")
+      contractedMana
+    }
+    else text
+  }
 
-  val u = Mana(Blue())
+  val t0 = """donst' match"""
+  val t1 = """Unearth <img align="absbottom" alt="5" src="/Handlers/Image.ashx?size=small&amp;name=5&amp;type=symbol"><img align="absbottom" alt="Black" src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol"><img align="absbottom" alt="Red" src="/Handlers/Image.ashx?size=small&amp;name=R&amp;type=symbol"> <i>(<img align="absbottom" alt="5" src="/Handlers/Image.ashx?size=small&amp;name=5&amp;type=symbol"><img align="absbottom" alt="Black" src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol"><img align="absbottom" alt="Red" src="/Handlers/Image.ashx?size=small&amp;name=R&amp;type=symbol">: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)</i>"""
+//  val matchMana = """<img.+alt="(.+)".*>""".r
+//  val matchMana(mana0) = t0
+//  val matchMana(mana1) = t1
+//  println(mana0)
+//  println(mana1)
 
-  val ur = Mana(Blue() :: Red())
+  val doc = Jsoup.parse(t1)
+  val images = doc.getElementsByTag("img")
 
-  val G = Green()
+  def printImages(i: Int): Unit = {
+    if (i >= images.size()) {}
+    else {
+      println(Mana.AltTextToMana(images.get(i).attr("alt")))
+      printImages(i + 1)
+    }
+  }
+
+  printImages(0)
 
 
-  val specialChars = """+a/b?c.d\u1234e"""
-
-  println(specialChars)
-
-  val sanitized = specialChars.replaceAll("[^0-9a-zA-Z-]+", "")
-
-  println(sanitized)
 
 
-  println(Mana.parseMana("Two or Green"))
-  println(Mana.parseMana("Black or Green"))
-  println(Mana.parseMana("15"))
+//  System.setProperty("webdriver.chrome.driver", "/home/wonko/Scala/Tools/ChromeDriver/chromedriver") //"/usr/bin/chromium-browser")
+//
+//  val driver = new ChromeDriver()
+//  val driverWait = new WebDriverWait(driver, 30)
+//
+//  val baseUri = "http://gatherer.wizards.com/"
+//
+//  val startPageUri = "Pages/Default.aspx"
+//
+//  driver.get(baseUri + startPageUri)
+//
+
 
 //  println("ur pays  u: " + (ur pays  u))
 //  println("u pays ur: " + (u pays ur))

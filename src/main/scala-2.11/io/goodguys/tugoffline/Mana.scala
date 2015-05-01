@@ -14,7 +14,7 @@ case class Mana(colors: List[ColorBase]) {
 
   override def toString: String = {
     if (colors.size == 1)
-      colors(0).toString
+      colors.head.toString
     else {
       "{" +
         colors.foldLeft("")((s: String, c: ColorBase) => {
@@ -53,8 +53,6 @@ case class Mana(colors: List[ColorBase]) {
 }
 
 object Mana {
-
-  implicit def mana2list(mana: Mana): List[Mana] = List(mana)
 
   def apply(s: String): Mana = {
     s match {
@@ -137,7 +135,7 @@ object Mana {
       if (remainingText.isEmpty)
         result
       else {
-        val color: Option[Mana] = parseOneMana(remainingText)//parseOneMana(remainingText(0).toString)
+        val color: Option[Mana] = parseOneMana(remainingText) //parseOneMana(remainingText(0).toString)
         color match {
           case None => result
           case _ => loop(remainingText.drop(remainingText.length), result ++ color) //loop(remainingText.drop(1), result ++ color)
@@ -147,16 +145,24 @@ object Mana {
 
     loop(text, List())
   }
+
 }
 
-//class ManaList private(list: List[Mana]) extends List[Mana]() {
-//  override def toString() = {
-//    "[" +
-//    this.foldLeft("")((s, mana) => s + mana.toString()) +
-//    "]"
-//  }
-//
-//  override def productElement(n: Int): Any = ???
-//
-//  override def productArity: Int = ???
-//}
+class ManaList(self: List[Mana]) {
+  override def toString = "[" + self.foldLeft("")((s, m) => s + m.toString) + "]"
+}
+
+object ManaList {
+  implicit def list2manalist(self: List[Mana]): ManaList = new ManaList(self)
+
+  def apply(colorBase: ColorBase*) = {
+    @tailrec
+    def buildList(i: Int, l: List[Mana]): ManaList = {
+      if (i >= colorBase.length)
+        l
+      else
+        buildList(i + 1, l ++ List(Mana(colorBase(i))))
+    }
+    buildList(0, Nil)
+  }
+}

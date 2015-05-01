@@ -116,14 +116,14 @@ object AttributeFactory {
 case class MagicCard(
                       name: String = MagicCard.ErrorOccured,
                       image: String = "./assets/default.png",
-                      castingCost: List[Mana] = List(OneColorless(), Blue(), Red()),
+                      castingCost: ManaList = ManaList(OneColorless(), Blue(), Red()),
                       color: List[ColorBase] = List(Blue(), Red()),
                       convertedManaCost: Int = 3,
                       cardTypes: List[String] = List("Creature", "Enchantment"),
                       subTypes: List[String]= List("Goblin", "Wizard"),
-                      rules: List[String],
-                      flavorText: Option[String],
-                      power: Option[Int] = Some(2),
+                      cardText: List[String],
+                      flavorText: List[String],
+                      power: Option[Int] = Some(2),       // 0-Int.MaxValue = Normal, -40 = *, -1 = *+1
                       toughness: Option[Int] = Some(2),
                       expansions: List[String] = List("Alara Reborn"),
                       rarity: String = "Uncommon",
@@ -131,7 +131,7 @@ case class MagicCard(
                       multiverseId: Int = 179597,
                       artist: String
                       ) {
-  override def toString = s"MagicCard($name, $castingCost, $cardTypes - $subTypes, $rules, $power/$toughness)"
+  override def toString = s"MagicCard($name, $castingCost, $cardTypes - $subTypes, $cardText, $power/$toughness)"
 }
 
 object MagicCard {
@@ -141,6 +141,7 @@ object MagicCard {
   val CardTypesKey = "Types:"
   val RulesTextKey = "Card Text:"
   val FlavorTextKey = "Flavor Text:"
+  val PowerToughnessKey = "P/T:"
   val ExpansionKey = "Expansion:"
   val RarityKey = "Rarity:"
   val CardNumberKey = "Card Number:"
