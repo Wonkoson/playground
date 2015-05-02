@@ -1,13 +1,20 @@
 
-//scalaVersion := "2.11.6"
+// only necessary if root project doesn't have settings
+scalaVersion := "2.11.6"
 
 // Projects
 
-lazy val root = (project in file(".")).
-  settings(rootSettings: _*).
-  settings(name := "TugOffline").
-  aggregate(macros, core).
-  dependsOn(macros, core)
+//lazy val root = (project in file (".")).
+//  settings(rootSettings: _*).
+//  settings(name := "TugOffline").
+//  aggregate(macros, core).
+//  dependsOn(macros, core)
+
+//lazy val root = (project in file (".")).
+//  settings(rootSettings: _*).
+//  settings(name := "TugOffline").
+//  aggregate(macros, core).
+//  dependsOn(macros, core)
 
 lazy val macros = (project in file("src/main/io/goodguys/macros")).
   settings(macrosSettings: _*).
@@ -18,6 +25,7 @@ lazy val core = (project in file("src/main/io/goodguys/tugoffline")).
   settings (name := "TugOffline Core").
   dependsOn(macros)
 
+//mainClass in (Compile,run) := Some("io.goodguys.tugoffline.Main")
 
 
 

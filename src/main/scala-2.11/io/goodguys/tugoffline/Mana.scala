@@ -1,14 +1,14 @@
 package io.goodguys.tugoffline
 
-//import io.goodguys.tugoffline.ColorBase
-
-import scala.annotation.tailrec
-import scala.language.implicitConversions
 
 /**
  * Created by wonko on 2015-04-28.
  */
 
+
+import scala.annotation.tailrec
+import scala.language.implicitConversions
+import scala.language.experimental.macros
 
 case class Mana(colors: List[ColorBase]) {
 
@@ -165,4 +165,24 @@ object ManaList {
     }
     buildList(0, Nil)
   }
+}
+
+
+//Error:(74, 29) macro implementation has incompatible shape:
+//required: (c: scala.reflect.macros.blackbox.Context): c.Expr[io.goodguys.tugoffline.MagicColor]
+//or      : (c: scala.reflect.macros.blackbox.Context): c.Tree
+//found   : (): io.goodguys.tugoffline.MagicColor
+//parameter lists have different length, required extra parameter c: scala.reflect.macros.blackbox.Context
+//def W: MagicColor = macro ColorWhite
+//^
+
+object Macros {
+  import io.goodguys.macros.Macros._
+  def W: Mana = macro ManaImpl.ColorWhite
+  def U: Mana = macro ManaImpl.ColorBlue
+  def B: Mana = macro ManaImpl.ColorBlack
+  def R: Mana = macro ManaImpl.ColorRed
+  def G: Mana = macro ManaImpl.ColorGreen
+  def C: Mana = macro ManaImpl.ColorColorless
+  def N: Mana = macro ManaImpl.ColorNothing
 }

@@ -4,7 +4,6 @@ package io.goodguys.tugoffline
  * Created by wonko on 2015-04-25.
  */
 
-import scala.language.experimental.macros
 
 
 //trait BaseColor {
@@ -149,23 +148,3 @@ object MagicCard {
 
   val ErrorOccured = "Error Card Field!!!"
 }
-
-//Error:(74, 29) macro implementation has incompatible shape:
-//required: (c: scala.reflect.macros.blackbox.Context): c.Expr[io.goodguys.tugoffline.MagicColor]
-//or      : (c: scala.reflect.macros.blackbox.Context): c.Tree
-//found   : (): io.goodguys.tugoffline.MagicColor
-//parameter lists have different length, required extra parameter c: scala.reflect.macros.blackbox.Context
-//def W: MagicColor = macro ColorWhite
-//^
-
-object Macros {
-  import io.goodguys.macros.Macros._
-  def W: Mana = macro ManaImpl.ColorWhite
-  def U: Mana = macro ManaImpl.ColorBlue
-  def B: Mana = macro ManaImpl.ColorBlack
-  def R: Mana = macro ManaImpl.ColorRed
-  def G: Mana = macro ManaImpl.ColorGreen
-  def C: Mana = macro ManaImpl.ColorColorless
-  def N: Mana = macro ManaImpl.ColorNothing
-}
-
