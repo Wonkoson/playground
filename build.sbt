@@ -10,22 +10,31 @@ scalaVersion := "2.11.6"
 //  aggregate(macros, core).
 //  dependsOn(macros, core)
 
-//lazy val root = (project in file (".")).
-//  settings(rootSettings: _*).
-//  settings(name := "TugOffline").
-//  aggregate(macros, core).
-//  dependsOn(macros, core)
+lazy val root = (project in file (".")).
+  settings(rootSettings: _*).
+  settings(name := "TugOffline").
+  aggregate(macros, core).
+  dependsOn(macros, core)
 
-lazy val macros = (project in file("src/main/io/goodguys/macros")).
+lazy val macros = (project in file("macros")).
   settings(macrosSettings: _*).
-  settings(name := "TugOffline Macros")
+  settings(name := "Macros")
 
-lazy val core = (project in file("src/main/io/goodguys/tugoffline")).
+lazy val core = (project in file("core")).
   settings(coreSettings: _*).
-  settings (name := "TugOffline Core").
+  settings (name := "Core").
   dependsOn(macros)
 
-//mainClass in (Compile,run) := Some("io.goodguys.tugoffline.Main")
+//lazy val macros = (project in file("src/main/io/goodguys/macros")).
+//  settings(macrosSettings: _*).
+//  settings(name := "TugOffline Macros")
+//
+//lazy val core = (project in file("src/main/io/goodguys/tugoffline")).
+//  settings(coreSettings: _*).
+//  settings (name := "TugOffline Core").
+//  dependsOn(macros)
+
+mainClass in (Compile,run) := Some("io.goodguys.core.Main")
 
 
 
@@ -40,9 +49,6 @@ val rootDeps = commonDeps ++ Seq(
 
 )
 
-val macrosDeps = commonDeps ++ Seq(
-
-)
 
 val coreDeps = commonDeps ++ Seq(
   // Selenium
@@ -60,6 +66,9 @@ val coreDeps = commonDeps ++ Seq(
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"       // PostgreSQL JDBC Driver
 )
 
+val macrosDeps = commonDeps ++ coreDeps ++ Seq(
+
+)
 
 
 // Settings

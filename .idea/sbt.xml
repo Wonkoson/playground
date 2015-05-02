@@ -8,11 +8,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/project" />
+            <option value="$PROJECT_DIR$/macros" />
+            <option value="$PROJECT_DIR$/macros/project" />
             <option value="$PROJECT_DIR$/project" />
-            <option value="$PROJECT_DIR$/src/main/io/goodguys/macros" />
-            <option value="$PROJECT_DIR$/src/main/io/goodguys/macros/project" />
-            <option value="$PROJECT_DIR$/src/main/io/goodguys/tugoffline" />
-            <option value="$PROJECT_DIR$/src/main/io/goodguys/tugoffline/project" />
           </set>
         </option>
         <option name="resolveClassifiers" value="true" />

@@ -6,8 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea_modules/core-build.iml" filepath="$PROJECT_DIR$/.idea_modules/core-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea_modules/macros.iml" filepath="$PROJECT_DIR$/.idea_modules/macros.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea_modules/macros-build.iml" filepath="$PROJECT_DIR$/.idea_modules/macros-build.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea_modules/root.iml" filepath="$PROJECT_DIR$/.idea_modules/root.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea_modules/root-build.iml" filepath="$PROJECT_DIR$/.idea_modules/root-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tugoffline.iml" filepath="$PROJECT_DIR$/.idea/modules/tugoffline.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tugoffline-build.iml" filepath="$PROJECT_DIR$/.idea/modules/tugoffline-build.iml" />
     </modules>
   </component>
 </project>
